@@ -11,9 +11,6 @@ RUN apt-get update && \
 	  apt-get install -y rethinkdb=$RETHINKDB_PACKAGE_VERSION && \
 	  rm -rf /var/lib/apt/lists/*
 
-ADD startup.sh /startup.sh
-RUN chmod +x /*.sh
-
 VOLUME ["/data/db", "/data/logs"]
 
 WORKDIR /data
@@ -21,6 +18,8 @@ WORKDIR /data
 RUN mkdir -p /data/db
 RUN mkdir -p /data/logs
 
-ENTRYPOINT ["/bin/bash", "/startup.sh"]
+ENV SHELL /bin/bash
+
+ENTRYPOINT ["/usr/bin/rethinkdb", "--directory", "/data/db", "--log-file", "/data/logs/rethinkdb.log"]
 
 EXPOSE 28015 29015 8080
